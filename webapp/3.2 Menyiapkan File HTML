@@ -1,1 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Belajar HTML
+        </title>
+    </head>
 
+    <body>
+        <h1>Selamat Belajar HTML</h1>
+        <p>
+            Halo, ini adalah halaman HTML pertama saya.
+        </p>
+    </body>
+</html>
