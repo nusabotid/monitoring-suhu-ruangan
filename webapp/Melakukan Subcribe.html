@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Sistem IoT</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #a4c2d2;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background-color: #0b3d57;
+      color: rgb(209, 222, 26);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .main-panel {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100% - 80px);
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .box {
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 280px;
+      text-align: center;
+      color: #f9f0f0;
+    }
+
+    .box-1 {
+      background-color: #126316;
+    }
+
+    .box-2 {
+      background-color: #126316;
+    }
+
+    .box-3 {
+      background-color: #126316;
+    }
+
+    .label {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #e9d2d2;
+    }
+
+    .status-box {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #ffffff;
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 100;
+    }
+  </style>
+
+  <!-- Instalasi Library MQTT.js -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Sistem Monitoring Suhu Ruangan</h1>
+  </header>
+
+  <div class="main-panel">
+    <!-- Status Box -->
+    <div class="status-box">
+      <!--89.Menampilkan Status Terhubung ke broker-->
+      Status: <span id="status" style="color: red;">Not Connected</span>
+    </div>
+
+    <div class="container">
+      <div class="box box-1">
+        <div class="label"><b>Suhu Ruangan 1</b></div>
+        <div id="suhu1" class="value">? °C</div>
+      </div>
+
+      <div class="box box-2">
+        <div class="label"><b>Suhu Ruangan 2</b></div>
+        <div id="suhu2" class="value">? °C</div>
+      </div>
+
+      <div class="box box-3">
+        <div class="label"><b>Suhu Ruangan 3</b></div>
+        <div id="suhu3" class="value">? °C</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menghubungkan Webapp ke broker -->
+  <script>
+    //90. Membuat clientId random
+    const clientId = "bebasaja"  + Math.random().toString(16).substr(2, 8); //90. Membuat clientId random
+    const host = "wss://magangnusabot.cloud.shiftr.io:443";
+
+    const options = {
+      keepalive: 60,
+      clientId: clientId,
+      username: "magangnusabot",
+      password: "Nusabot123",
+      protocolId: "MQTT",
+      protocolVersion: 4,
+      clean: true,
+      reconnectPeriod: 1000,
+      connectTimeout: 30000,
+    };
+
+    console.log("Menghubungkan ke broker...");
+    const client = mqtt.connect(host, options);
+
+    // 93. Subscribe ke topik suhu / Menampilkan data secara realtime
+    client.subscribe("Monitoring/#", {qos: 1}); // 93. Subscribe ke topik suhu / Menampilkan data secara realtime
+   
+    client.on("connect", () => {
+      console.log("Terhubung ke broker. clientId: " + clientId);
+      // 89.Menampilkan Status Terhubung ke broker
+      document.getElementById("status").innerHTML = "Connected";
+      document.getElementById("status").style.color = "blue"; // 89.Menampilkan Status Terhubung ke broker
+    });
+
+    // 93. Subscribe ke topik suhu / Menampilkan data secara realtime  
+    client.on("message", (topic, message) => {
+      const data = message.toString();
+      console.log(`Pesan diterima. Topik: ${topic}, Pesan: ${data}`);
+
+      if (topic === "Monitoring/ruangan_1") {
+        document.getElementById("suhu1").innerHTML = data + " °C";
+      }
+    });
+  </script>
+</body>
+
+</html>
