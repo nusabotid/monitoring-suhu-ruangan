@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Sistem IoT</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #a4c2d2;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background-color: #0b3d57; /* Blue 600 */
+      color: rgb(209, 222, 26);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .main-panel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100% - 80px);
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .box {
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 280px;
+      text-align: center;
+      color: #f9f0f0;
+    }
+
+    .box-1 {
+      background-color: #126316; /* Green 600 */
+    }
+
+    .box-2 {
+      background-color: #126316; /* Orange 600 */
+    }
+
+    .box-3 {
+      background-color: #126316; /* Red 500 */
+    }
+
+    .label {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #e9d2d2;
+    }
+
+    .status-box {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #ffffff;
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 100;
+    }
+  </style>
+  <!-- Instalasi Library MQTT.js -->
+   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Sistem Monitoring Suhu Ruangan</h1>
+
+  </header>
+
+  <div class="main-panel">
+    <div class="container">
+      <div class="box box-1">
+        <div class="label"><b>Suhu Ruangan 1</b></div>
+        <div id="suhu1" class="value">? °C</div>
+      </div>
+
+      <div class="box box-2">
+        <div class="label"><b>Suhu Ruangan 2</b></div>
+        <div id="suhu2" class="value">? °C</div>
+      </div>
+
+      <div class="box box-3">
+        <div class="label"><b>Suhu Ruangan 3</b></div>
+        <div id="suhu3" class="value">? °C</div>
+      </div>
+    </div>
+  </div>
+</body>
+
+  <!--Menghubungkan Webapp ke broker-->
+  <script>
+    const clientId = "Suhu Ruangan 1";
+    const host = "wss://magangnusabot.cloud.shiftr.io:443";
+
+    const options = {
+      keepalive: 60,
+      clientId: clientId,
+      username: "magangnusabot",
+      password: "Nusabot123",
+      protocolId: "MQTT",
+      protocolversion: 4,
+      clean : false,
+      reconnetPeriod: 1000,
+      connectTimeout: 30000,
+    }
+    console.log("Menghubungkan ke broker");
+    const client = mqtt.connect (host, options);
+
+    client.on("connect", () => {
+      console.log ("Terhubung ke broker.clientId: " + clientId);
+    });
+    
+
+  </script>
+
+</html>
